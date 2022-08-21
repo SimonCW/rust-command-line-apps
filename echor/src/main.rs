@@ -16,11 +16,11 @@ fn main() {
             Arg::with_name("omit_newline")
                 .short("n")
                 .help("Omit newline at the end")
-                .takes_value(false)
+                .takes_value(false),
         )
         .get_matches();
     let text = _matches.values_of_lossy("text").unwrap();
     let omit_newline = _matches.is_present("omit_newline");
 
-    print!("{}{}", text.join(" "), if omit_newline {""} else {"\n"});
+    print!("{}{}", text.join(" "), if omit_newline { "" } else { "\n" });
 }
