@@ -8,6 +8,7 @@ pub struct Config {
     files: Vec<String>,
     number_lines: bool,
     number_nonblank_lines: bool,
+    show_ends: bool,
 }
 
 type ProgResult<T> = Result<T, Box<dyn Error>>;
@@ -39,11 +40,19 @@ pub fn get_args() -> ProgResult<Config> {
                 .takes_value(false)
                 .conflicts_with("number_lines"),
         )
+        .arg(
+            Arg::with_name("show_ends")
+                .long("show-ends")
+                .short("-E")
+                .help("Show $ at the end of each line")
+                .takes_value(false),
+        )
         .get_matches();
     Ok(Config {
         files: matches.values_of_lossy("files").unwrap(),
         number_lines: matches.is_present("number_lines"),
         number_nonblank_lines: matches.is_present("number_nonblank_lines"),
+        show_ends: matches.is_present("show_ends"),
     })
 }
 
@@ -54,26 +63,55 @@ fn open(filename: &str) -> ProgResult<Box<dyn BufRead>> {
     }
 }
 
+// fn make_string(config: Config) -> String {
+//     match Config
+//
+//     format!("{}")
+// }
+
 pub fn run(config: Config) -> ProgResult<()> {
     for filename in config.files {
         match open(&filename) {
             Err(err) => eprintln!("Failed to open {}: {}", filename, err),
             Ok(file) => {
-                let mut last_num = 0;
-                for (line_num, line_result) in file.lines().enumerate() {
-                    let line = line_result?;
-                    if config.number_lines {
-                        println!("{:>6}\t{}", line_num + 1, line)
-                    } else if config.number_nonblank_lines {
-                        if !line.is_empty() {
-                            last_num += 1;
-                            println!("{:>6}\t{}", last_num, line);
-                        } else {
-                            println!();
-                        }
+                let (width, tab_char) = if config.number_lines | config.number_nonblank_lines {
+                    (6, "\t")
+                } else {
+                    (0, "")
+                };
+                let line_end = if config.show_ends { "$" } else { "" };
+                let mut line_num = 0;
+                for line in file.lines() {
+                    let line = line?;
+                    let line_num_str = if config.number_lines
+                        || (config.number_nonblank_lines && !line.is_empty())
+                    {
+                        line_num += 1;
+                        line_num.to_string()
                     } else {
-                        println!("{}", line);
-                    }
+                        "".to_string()
+                    };
+                    println!(
+                        "{:>width$}{}{}{}",
+                        line_num_str,
+                        if !line.is_empty() { tab_char } else { "" },
+                        line,
+                        line_end,
+                        width = if !line.is_empty() { width } else { 0 }
+                    );
+
+                    // if config.number_lines {
+                    //     println!("{:>6}\t{}", line_num + 1, line)
+                    // } else if config.number_nonblank_lines {
+                    //     if !line.is_empty() {
+                    //         last_num += 1;
+                    //         println!("{:>6}\t{}", last_num, line);
+                    //     } else {
+                    //         println!();
+                    //     }
+                    // } else {
+                    //     println!("{}", line);
+                    // }
                 }
             }
         }
