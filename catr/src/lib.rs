@@ -70,6 +70,7 @@ fn open(filename: &str) -> ProgResult<Box<dyn BufRead>> {
 // }
 
 pub fn run(config: Config) -> ProgResult<()> {
+    let mut line_num = 0;
     for filename in config.files {
         match open(&filename) {
             Err(err) => eprintln!("Failed to open {}: {}", filename, err),
@@ -80,7 +81,6 @@ pub fn run(config: Config) -> ProgResult<()> {
                     (0, "")
                 };
                 let line_end = if config.show_ends { "$" } else { "" };
-                let mut line_num = 0;
                 for line in file.lines() {
                     let line = line?;
                     let line_num_str = if config.number_lines

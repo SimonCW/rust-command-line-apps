@@ -64,11 +64,7 @@ fn run(args: &[&str], expected_file: &str) -> TestResult {
 }
 
 // --------------------------------------------------
-fn run_stdin(
-    input_file: &str,
-    args: &[&str],
-    expected_file: &str,
-) -> TestResult {
+fn run_stdin(input_file: &str, args: &[&str], expected_file: &str) -> TestResult {
     let input = fs::read_to_string(input_file)?;
     let expected = fs::read_to_string(expected_file)?;
     Command::cargo_bin(PRG)?
@@ -108,6 +104,16 @@ fn bustle_stdin_b() -> TestResult {
 
 // --------------------------------------------------
 #[test]
+fn bustle_stdin_e() -> TestResult {
+    run_stdin(
+        BUSTLE,
+        &["-E", "-"],
+        "tests/expected/the-bustle.txt.E.stdin.out",
+    )
+}
+
+// --------------------------------------------------
+#[test]
 fn empty() -> TestResult {
     run(&[EMPTY], "tests/expected/empty.txt.out")
 }
@@ -126,6 +132,12 @@ fn empty_b() -> TestResult {
 
 // --------------------------------------------------
 #[test]
+fn empty_e() -> TestResult {
+    run(&["-E", EMPTY], "tests/expected/empty.txt.E.out")
+}
+
+// --------------------------------------------------
+#[test]
 fn fox() -> TestResult {
     run(&[FOX], "tests/expected/fox.txt.out")
 }
@@ -140,6 +152,12 @@ fn fox_n() -> TestResult {
 #[test]
 fn fox_b() -> TestResult {
     run(&["-b", FOX], "tests/expected/fox.txt.b.out")
+}
+
+// --------------------------------------------------
+#[test]
+fn fox_e() -> TestResult {
+    run(&["-E", FOX], "tests/expected/fox.txt.E.out")
 }
 
 // --------------------------------------------------
@@ -165,6 +183,15 @@ fn spiders_b() -> TestResult {
 
 // --------------------------------------------------
 #[test]
+fn spiders_e() -> TestResult {
+    run(
+        &["--show-ends", SPIDERS],
+        "tests/expected/spiders.txt.E.out",
+    )
+}
+
+// --------------------------------------------------
+#[test]
 fn bustle() -> TestResult {
     run(&[BUSTLE], "tests/expected/the-bustle.txt.out")
 }
@@ -183,6 +210,12 @@ fn bustle_b() -> TestResult {
 
 // --------------------------------------------------
 #[test]
+fn bustle_e() -> TestResult {
+    run(&["-E", BUSTLE], "tests/expected/the-bustle.txt.E.out")
+}
+
+// --------------------------------------------------
+#[test]
 fn all() -> TestResult {
     run(&[FOX, SPIDERS, BUSTLE], "tests/expected/all.out")
 }
@@ -197,4 +230,10 @@ fn all_n() -> TestResult {
 #[test]
 fn all_b() -> TestResult {
     run(&[FOX, SPIDERS, BUSTLE, "-b"], "tests/expected/all.b.out")
+}
+
+// --------------------------------------------------
+#[test]
+fn all_e() -> TestResult {
+    run(&[FOX, SPIDERS, BUSTLE, "-E"], "tests/expected/all.E.out")
 }

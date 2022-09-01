@@ -30,4 +30,3 @@ cat    < $BUSTLE > $OUT_DIR/$(basename $BUSTLE).stdin.out
 cat -n < $BUSTLE > $OUT_DIR/$(basename $BUSTLE).n.stdin.out
 cat -b < $BUSTLE > $OUT_DIR/$(basename $BUSTLE).b.stdin.out
 cat -E < $BUSTLE > $OUT_DIR/$(basename $BUSTLE).E.stdin.out
-
