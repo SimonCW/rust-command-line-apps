@@ -91,15 +91,18 @@ pub fn run(config: Config) -> ProgResult<()> {
                     } else {
                         "".to_string()
                     };
-                    println!(
-                        "{:>width$}{}{}{}",
-                        line_num_str,
-                        if !line.is_empty() { tab_char } else { "" },
-                        line,
-                        line_end,
-                        width = if !line.is_empty() { width } else { 0 }
-                    );
-
+                    if config.number_nonblank_lines && line.is_empty() {
+                        println!()
+                    } else {
+                        println!(
+                            "{:>width$}{}{}{}",
+                            line_num_str,
+                            tab_char,
+                            line,
+                            line_end,
+                            width = width
+                        )
+                    };
                     // if config.number_lines {
                     //     println!("{:>6}\t{}", line_num + 1, line)
                     // } else if config.number_nonblank_lines {
