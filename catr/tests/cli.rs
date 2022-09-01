@@ -237,3 +237,9 @@ fn all_b() -> TestResult {
 fn all_e() -> TestResult {
     run(&[FOX, SPIDERS, BUSTLE, "-E"], "tests/expected/all.E.out")
 }
+// --------------------------------------------------
+
+#[test]
+fn all_be() -> TestResult {
+    run(&[FOX, SPIDERS, BUSTLE, "-bE"], "tests/expected/all.bE.out")
+}

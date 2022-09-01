@@ -25,6 +25,7 @@ cat    $ALL > $OUT_DIR/all.out
 cat -n $ALL > $OUT_DIR/all.n.out
 cat -b $ALL > $OUT_DIR/all.b.out
 cat -E $ALL > $OUT_DIR/all.E.out
+cat -b -E $ALL > $OUT_DIR/all.bE.out
 
 cat    < $BUSTLE > $OUT_DIR/$(basename $BUSTLE).stdin.out
 cat -n < $BUSTLE > $OUT_DIR/$(basename $BUSTLE).n.stdin.out

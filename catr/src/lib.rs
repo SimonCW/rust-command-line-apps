@@ -63,12 +63,6 @@ fn open(filename: &str) -> ProgResult<Box<dyn BufRead>> {
     }
 }
 
-// fn make_string(config: Config) -> String {
-//     match Config
-//
-//     format!("{}")
-// }
-
 pub fn run(config: Config) -> ProgResult<()> {
     let mut line_num = 0;
     for filename in config.files {
@@ -92,7 +86,7 @@ pub fn run(config: Config) -> ProgResult<()> {
                         "".to_string()
                     };
                     if config.number_nonblank_lines && line.is_empty() {
-                        println!()
+                        println!("{}", line_end)
                     } else {
                         println!(
                             "{:>width$}{}{}{}",
