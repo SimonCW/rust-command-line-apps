@@ -16,7 +16,7 @@ type ProgResult<T> = Result<T, Box<dyn Error>>;
 pub fn get_args() -> ProgResult<Config> {
     let matches = App::new("catr")
         .version("0.1.0")
-        .author("Simon Weiss")
+        .author("Simon Weiß")
         .about("cat in Rust")
         .arg(
             Arg::with_name("files")
