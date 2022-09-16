@@ -13,6 +13,8 @@ pub struct Config {
 }
 
 pub fn get_args() -> ProgResult<Config> {
+    // ToDo: use clap derive API https://docs.rs/clap/latest/clap/_derive/_tutorial/index.html
+    // And migrate to Clap 3.2
     let matches = App::new("headr")
         .version("0.1.0")
         .author("Simon Weiß")
@@ -27,7 +29,7 @@ pub fn get_args() -> ProgResult<Config> {
             Arg::with_name("lines")
                 .value_name("LINES")
                 .long("lines")
-                .short("n")
+                .short('n')
                 .takes_value(true)
                 .help("Number of lines to print")
                 .default_value("10"),
@@ -36,7 +38,7 @@ pub fn get_args() -> ProgResult<Config> {
             Arg::with_name("bytes")
                 .value_name("BYTES")
                 .long("bytes")
-                .short("c")
+                .short('c')
                 .takes_value(true)
                 .help("Number of bytes to print")
                 .required(false)
