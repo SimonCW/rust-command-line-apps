@@ -1,93 +1,60 @@
-use clap::{App, Arg};
+use clap::Parser;
 use std::error::Error;
 use std::fs::File;
 use std::io::{self, BufRead, BufReader, Read};
+use std::string::String;
 
 type ProgResult<T> = Result<T, Box<dyn Error>>;
 
-#[derive(Debug)]
+#[derive(Debug, Parser)]
+#[clap(author, version, about)]
 pub struct Config {
+    #[clap(default_value = "-")]
     files: Vec<String>,
+    /// Number of lines to print
+    #[clap(short = 'n', long, default_value_t = 10, value_parser=parse_line_count)]
     lines: usize,
+    /// Number of bytes to print
+    #[clap(short = 'c', long, conflicts_with = "lines", value_parser=parse_byte_count)]
     bytes: Option<usize>,
 }
 
 pub fn get_args() -> ProgResult<Config> {
-    // ToDo: use clap derive API https://docs.rs/clap/latest/clap/_derive/_tutorial/index.html
-    // And migrate to Clap 3.2
-    let matches = App::new("headr")
-        .version("0.1.0")
-        .author("Simon Weiß")
-        .about("Head, implemented in Rust")
-        .arg(
-            Arg::with_name("files")
-                .value_name("FILES")
-                .multiple(true)
-                .default_value("-"),
-        )
-        .arg(
-            Arg::with_name("lines")
-                .value_name("LINES")
-                .long("lines")
-                .short('n')
-                .takes_value(true)
-                .help("Number of lines to print")
-                .default_value("10"),
-        )
-        .arg(
-            Arg::with_name("bytes")
-                .value_name("BYTES")
-                .long("bytes")
-                .short('c')
-                .takes_value(true)
-                .help("Number of bytes to print")
-                .required(false)
-                .conflicts_with("lines"),
-        )
-        .get_matches();
-
-    let lines = matches
-        .value_of("lines")
-        .map(parse_positive_int)
-        .transpose()
-        .map_err(|e| format!("illegal line count -- {}", e))?;
-
-    let bytes = matches
-        .value_of("bytes")
-        .map(parse_positive_int)
-        .transpose()
-        .map_err(|e| format!("illegal byte count -- {}", e))?;
-
-    Ok(Config {
-        files: matches.values_of_lossy("files").unwrap(),
-        lines: lines.unwrap(),
-        bytes,
-    })
+    let config = Config::parse();
+    // println!("{:?}", config);
+    Ok(config)
 }
 
-fn parse_positive_int(val: &str) -> ProgResult<usize> {
+fn parse_line_count(val: &str) -> Result<usize, String> {
     match val.parse() {
         Ok(n) if n > 0 => Ok(n),
-        _ => Err(From::from(val)),
+        _ => Err(format!("illegal line count -- {}", val)),
     }
 }
-#[test]
-fn test_parse_positive_int() {
-    // 3 is an OK integer
-    let res = parse_positive_int("3");
-    assert!(res.is_ok());
-    assert_eq!(res.unwrap(), 3);
 
-    // Any string is an error
-    let res = parse_positive_int("foo");
-    assert!(res.is_err());
-    assert_eq!(res.unwrap_err().to_string(), "foo".to_string());
-
-    // A zero is an error
-    let res = parse_positive_int("0");
-    assert!(res.is_err());
-    assert_eq!(res.unwrap_err().to_string(), "0".to_string());
+fn parse_byte_count(val: &str) -> Result<usize, String> {
+    match val.parse() {
+        Ok(n) if n > 0 => Ok(n),
+        _ => Err(format!("illegal byte count -- {}", val)),
+    }
 }
+// #[test]
+// fn test_parse_positive_int() {
+//     // 3 is an OK integer
+//     let res = parse_positive_int("3");
+//     assert!(res.is_ok());
+//     assert_eq!(res.unwrap(), 3);
+//
+//     // Any string is an error
+//     let res = parse_positive_int("foo");
+//     assert!(res.is_err());
+//     assert_eq!(res.unwrap_err().to_string(), "foo".to_string());
+//
+//     // A zero is an error
+//     let res = parse_positive_int("0");
+//     assert!(res.is_err());
+//     assert_eq!(res.unwrap_err().to_string(), "0".to_string());
+// }
 
 fn open(filename: &str) -> ProgResult<Box<dyn BufRead>> {
     match filename {
