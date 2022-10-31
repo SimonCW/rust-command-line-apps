@@ -11,6 +11,7 @@ pub struct Config {
     /// Files to cat
     #[arg(name = "FILES", default_value = "-")]
     files: Vec<String>,
+
     /// Print line numbers
     #[arg(short, long = "number")]
     number_lines: bool,
