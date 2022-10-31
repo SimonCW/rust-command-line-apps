@@ -1,12 +1,14 @@
 [package]
 name = "wcr"
+author = "Simon Weiß"
+about = "wc implemented in rust"
 version = "0.1.0"
 edition = "2021"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
-clap = "2.33"
+clap = { version = "4.0", features = ["derive"]}
 
 [dev-dependencies]
 assert_cmd = "2"
