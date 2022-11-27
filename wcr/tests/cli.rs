@@ -26,17 +26,18 @@ fn gen_bad_file() -> String {
 }
 
 // --------------------------------------------------
-#[test]
-fn dies_chars_and_bytes() -> TestResult {
-    Command::cargo_bin(PRG)?
-        .args(&["-m", "-c"])
-        .assert()
-        .failure()
-        .stderr(predicate::str::contains(
-            "The argument '--bytes' cannot be used with '--chars'",
-        ));
-    Ok(())
-}
+// Implementing the GNU Version that allows -mc.
+// #[test]
+// fn dies_chars_and_bytes() -> TestResult {
+//     Command::cargo_bin(PRG)?
+//         .args(&["-m", "-c"])
+//         .assert()
+//         .failure()
+//         .stderr(predicate::str::contains(
+//             "The argument '--bytes' cannot be used with '--chars'",
+//         ));
+//     Ok(())
+// }
 
 // --------------------------------------------------
 fn run(args: &[&str], expected_file: &str) -> TestResult {
@@ -162,8 +163,7 @@ fn atlamal_bytes_lines() -> TestResult {
 #[test]
 fn atlamal_stdin() -> TestResult {
     let input = fs::read_to_string(ATLAMAL)?;
-    let expected =
-        fs::read_to_string("tests/expected/atlamal.txt.stdin.out")?;
+    let expected = fs::read_to_string("tests/expected/atlamal.txt.stdin.out")?;
     Command::cargo_bin(PRG)?
         .write_stdin(input)
         .assert()

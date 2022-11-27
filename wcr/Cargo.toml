@@ -1,7 +1,7 @@
 [package]
 name = "wcr"
 author = "Simon Weiß"
-about = "wc implemented in rust"
+description = "wc implemented in rust"
 version = "0.1.0"
 edition = "2021"
 

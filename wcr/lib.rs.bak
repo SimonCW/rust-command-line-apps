@@ -1,0 +1,71 @@
+use clap::builder::ArgPredicate;
+use clap::parser::ValueSource;
+use clap::{ArgGroup, Parser};
+use std::error::Error;
+
+type MyResult<T> = Result<T, Box<dyn Error>>;
+
+#[derive(Debug, Parser)]
+#[command(version, author, about)]
+// #[command(group(
+//         ArgGroup::new("flags")
+//     .args(["lines", "words", "bytes"])
+//     .multiple(true)
+// ))]
+pub struct Config {
+    #[arg(default_value = "-")]
+    files: Vec<String>,
+
+    /// print the newline counts
+    #[arg(
+        long,
+        short,
+        default_value="true",
+        default_value_ifs([
+            ("words", ArgPredicate::IsPresent, "false"),
+            ("bytes", ArgPredicate::IsPresent, "false"),
+        ]
+        ),
+    )]
+    lines: bool,
+
+    /// print the word counts
+    #[arg(
+        long,
+        short,
+        default_value="true",
+        default_value_ifs([
+            ("lines", ArgPredicate::IsPresent, "false"),
+            ("bytes", ArgPredicate::IsPresent, "false"),
+        ]
+        ),
+    )]
+    words: bool,
+
+    /// print the byte counts
+    #[arg(
+        long,
+        short='c',
+        default_value = "true",
+        default_value_ifs([
+            ("lines", ArgPredicate::IsPresent, "false"),
+            ("words", ArgPredicate::IsPresent, "false"),
+        ]
+        ),
+    )]
+    bytes: bool,
+
+    /// print the character counts
+    #[arg(long, short = 'm', default_value = "false")]
+    chars: bool,
+}
+
+pub fn get_args() -> MyResult<Config> {
+    let config = Config::parse();
+    Ok(config)
+}
+
+pub fn run(config: Config) -> MyResult<()> {
+    println!("{:#?}", config);
+    Ok(())
+}
