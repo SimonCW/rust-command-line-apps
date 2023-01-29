@@ -21,7 +21,6 @@ pub struct Config {
 
 pub fn get_args() -> ProgResult<Config> {
     let config = Config::parse();
-    // println!("{:?}", config);
     Ok(config)
 }
 

@@ -5,21 +5,22 @@ use std::io::{self, BufRead, BufReader};
 
 type ProgResult<T> = Result<T, Box<dyn Error>>;
 
-#[derive(Debug, Parser)]
-#[command(author, version, about)]
+#[derive(Parser, Debug)]
+#[command(
+    author = "Simon Weiß",
+    version,
+    about = "Incomplete `GNU cat` in Rust for learning purposes"
+)]
 pub struct Config {
     /// Files to cat
     #[arg(name = "FILES", default_value = "-")]
     files: Vec<String>,
-
     /// Print line numbers
     #[arg(short, long = "number")]
     number_lines: bool,
-
     /// Print line numbers for nonblank lines
     #[arg(short = 'b', long = "number-nonblank", conflicts_with = "number_lines")]
     number_nonblank_lines: bool,
-
     /// Show $ at the end of each line
     #[arg(short = 'E', long = "show-ends")]
     show_ends: bool,
